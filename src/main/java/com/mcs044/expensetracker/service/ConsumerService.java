@@ -12,7 +12,7 @@ import com.mcs044.expensetracker.utility.PasswordUtility;
 public class ConsumerService {
 
     @Autowired
-    private ConsumerRepository userRepository;
+    private ConsumerRepository consumerRepository;
 
     @Autowired
     private PasswordUtility passwordUtility;
@@ -20,13 +20,20 @@ public class ConsumerService {
     @Autowired
     private EmailUtility emailUtility;
 
+	@Autowired
+	private ReportService reportService;
+
+	@Autowired
+	private BudgetService budgetService;
+
     public Consumer createUser(Consumer consumer) throws Exception {		
         String username = consumer.getUsername(),
-               emailAddress = consumer.getEmailAddress(),
-               firstName = consumer.getFirstName(),
-               lastName = consumer.getLastName(),
-               password = consumer.getPassword();
+			emailAddress = consumer.getEmailAddress(),
+			firstName = consumer.getFirstName(),
+			lastName = consumer.getLastName(),
+			password = consumer.getPassword();
         Long phoneNumber = consumer.getPhoneNumber();
+		double defaultBudget = consumer.getDefaultBudget();
 		if (getUserByUsername(username) != null)
 			throw new Exception(
 					"Error: Username already exists. Please try with a different username");
@@ -44,6 +51,7 @@ public class ConsumerService {
 		appUser.setLastName(lastName);
 		appUser.setPhoneNumber(phoneNumber);
 		appUser.setEmailAddress(emailAddress);
+		appUser.setDefaultBudget(defaultBudget);
 
 		byte[] salt = passwordUtility.getSalt();
 		String hashPassword = passwordUtility.generatePasswordHash(password, salt);
@@ -51,18 +59,19 @@ public class ConsumerService {
 		appUser.setPassword(hashPassword);
 		appUser.setSalt(salt);
 
-		Consumer result = userRepository.save(appUser);
-
+		Consumer result = consumerRepository.save(appUser);
+		budgetService.saveInitialBudget(result);
+		reportService.saveInitialReport(result);
 		emailUtility.sendMail(username, emailAddress);
 		return result;
     }
     
     public Consumer getUserByUsername(String username) {
-		return userRepository.findByUsername(username);
+		return consumerRepository.findByUsername(username);
 	}
 
 	public Consumer getUserByEmailAddress(String username) {
-		return userRepository.findByEmailAddress(username);
+		return consumerRepository.findByEmailAddress(username);
 	}
 
 	public boolean isValidEmail(String email) {
@@ -70,7 +79,7 @@ public class ConsumerService {
 	}
 
     public Consumer userLogin(String username, String password) throws Exception {
-        Consumer consumer = userRepository.findByUsername(username);
+        Consumer consumer = consumerRepository.findByUsername(username);
 		if (consumer == null)
 			throw new Exception("Error! Please check if username or password is valid");
 		String securedPasswordHash = consumer.getPassword();
@@ -80,11 +89,11 @@ public class ConsumerService {
 		if (!isPasswordCorrect)
 			throw new Exception("Error! Please check if username or password is valid");
 		else
-			return userRepository.findByUsername(username);
+			return consumerRepository.findByUsername(username);
     }
 
     public String passwordReset(String username, String oldPassword, String newPassword) throws Exception {
-        Consumer consumer = userRepository.findByUsername(username);
+        Consumer consumer = consumerRepository.findByUsername(username);
         String securedPasswordHash = consumer.getPassword();
 
 		Boolean isPasswordCorrect = passwordUtility.validatePassword(oldPassword, securedPasswordHash, consumer.getSalt());
@@ -92,13 +101,17 @@ public class ConsumerService {
 			throw new Exception("Error! Please check if username or password is valid");
 
 		byte[] salt = passwordUtility.getSalt();
-		Consumer apiUser = userRepository.findByUsername(username);
+		Consumer apiUser = consumerRepository.findByUsername(username);
 		if (apiUser == null)
 			throw new Exception("Error! Please check if username or password is valid");
 		apiUser.setPassword(passwordUtility.generatePasswordHash(newPassword, salt));
 		apiUser.setSalt(salt);
-		userRepository.save(apiUser);
+		consumerRepository.save(apiUser);
 		return "Password reset successful";
+    }
+
+	public Consumer getUserById(Long userId) {
+        return consumerRepository.findById(userId).orElse(null);
     }
     
 }

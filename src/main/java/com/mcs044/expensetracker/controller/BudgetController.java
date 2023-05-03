@@ -1,14 +1,10 @@
 package com.mcs044.expensetracker.controller;
 
-import java.math.BigDecimal;
+import com.mcs044.expensetracker.entity.Budget;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mcs044.expensetracker.service.BudgetService;
 
@@ -21,15 +17,21 @@ public class BudgetController {
 
     @CrossOrigin
     @GetMapping
-    public ResponseEntity<BigDecimal> getOverallBudget() {
-        BigDecimal overallBudget = budgetService.getOverallBudget();
-        return ResponseEntity.ok(overallBudget);
+    public ResponseEntity<?> getOverallBudget() {
+        return ResponseEntity.ok(budgetService.getOverallBudget());
     }
 
     @CrossOrigin
     @PutMapping
-    public BigDecimal setOverallBudget(@RequestBody BigDecimal overallBudget) {
-        return budgetService.setOverallBudget(overallBudget);
+    public ResponseEntity<?> addBudget(@RequestParam("userId") Long userId, @RequestBody Budget budget) {
+         try {
+            Budget returned = budgetService.setBudget(userId, budget);
+            return ResponseEntity.ok(returned);
+        } catch (Exception ex) {
+            String errorMessage = "Error during set budget: " + ex.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(errorMessage);
+    }
     }
 }
 

@@ -1,5 +1,6 @@
 package com.mcs044.expensetracker.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,9 @@ public class ExpenseService {
     @Autowired
     private ConsumerRepository consumerRepository;
 
+    @Autowired
+	private ReportService reportService;
+
     public List<Expense> getAllExpenses(Long userId) {
         Optional<Consumer> consumer = consumerRepository.findById(userId);
         if (consumer.isPresent())
@@ -32,17 +36,32 @@ public class ExpenseService {
         return null;
     }
 
+    public List<Expense> getExpensesByMonthAndYear(Long userId, Integer month, Integer year) {
+        Optional<Consumer> consumer = consumerRepository.findById(userId);
+        if (consumer.isPresent()) {
+            LocalDate startDate = LocalDate.of(year, month, 1); // First day of the month
+            LocalDate endDate = startDate.withDayOfMonth(startDate.lengthOfMonth()); // Last day of the month
+            return expenseRepository.findByConsumerAndDateBetween(consumer.get(), startDate, endDate);
+        }
+        return null;
+    }
+    
+
     public Expense addExpense(Long userId, Expense expense) {
+        Expense returned = null;
         Optional<Consumer> consumer = consumerRepository.findById(userId);
         if (consumer.isPresent()) {
             Expense newExpense = new Expense();
             newExpense.setId(expense.getId());
             newExpense.setCategory(expense.getCategory());
             newExpense.setAmount(expense.getAmount());
+            newExpense.setDate(expense.getDate());
+            newExpense.setDescription(expense.getDescription());
             newExpense.setConsumer(consumer.get());
-            return expenseRepository.save(newExpense);
+            returned = expenseRepository.save(newExpense);
+            reportService.update(newExpense);
         }
-        return null;
+        return returned;
     }
 
     @Transactional

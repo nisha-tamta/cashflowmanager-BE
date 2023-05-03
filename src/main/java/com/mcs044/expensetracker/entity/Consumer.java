@@ -1,6 +1,9 @@
 package com.mcs044.expensetracker.entity;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -9,6 +12,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Details of and credential storage for the Consumer
@@ -17,13 +22,14 @@ import jakarta.persistence.OneToMany;
  * @since	2023-01-01
  *
  */
+@Getter
+@Setter
 @Entity
 public class Consumer {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(unique=true)
 	private String username;
 	private String password;
@@ -32,79 +38,11 @@ public class Consumer {
 	private Long phoneNumber;
 	private String emailAddress;
 	private byte[] salt;
+	private double defaultBudget = 50000L;
 
-    @OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL)
-    private List<Expense> expenses;
+	@OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Budget> budgets = new ArrayList<>();
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public Long getPhoneNumber() {
-		return phoneNumber;
-	}
-
-	public void setPhoneNumber(Long phoneNumber) {
-		this.phoneNumber = phoneNumber;
-	}
-
-	public String getEmailAddress() {
-		return emailAddress;
-	}
-
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
-
-	public byte[] getSalt() {
-		return salt;
-	}
-
-	public void setSalt(byte[] salt) {
-		this.salt = salt;
-	}
-
-	public List<Expense> getExpenses() {
-		return expenses;
-	}
-
-	public void setExpenses(List<Expense> expenses) {
-		this.expenses = expenses;
-	}
+	@OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL)
+	private List<Expense> expenses;
 }
