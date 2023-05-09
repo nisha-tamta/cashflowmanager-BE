@@ -30,15 +30,6 @@ public class ReportService {
         return null;
     }
 
-    public List<Report> geteportsByMonthAndYear(Long userId, Integer month, Integer year) {
-        Optional<Consumer> consumer = consumerRepository.findById(userId);
-        if (consumer.isPresent()) {
-            MonthEnum monthEnum = MonthEnum.valueOf(convertToFirstLetterUppercase(LocalDate.of(year, month, 1).getMonth().name()));
-            return reportRepository.findByConsumerAndMonth(consumer.get(), monthEnum);
-        }
-        return null;
-    }
-
     public void saveInitialReport(Consumer consumer) {
         Report report = new Report();
         report.setConsumer(consumer);
