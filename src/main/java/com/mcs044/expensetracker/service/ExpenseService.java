@@ -27,7 +27,7 @@ public class ExpenseService {
     private ConsumerRepository consumerRepository;
 
     @Autowired
-	private ReportService reportService;
+    private ReportService reportService;
 
     public List<Expense> getAllExpenses(Long userId) {
         Optional<Consumer> consumer = consumerRepository.findById(userId);
@@ -45,9 +45,14 @@ public class ExpenseService {
         }
         return null;
     }
-    
 
     public Expense addExpense(Long userId, Expense expense) {
+        boolean editCall = expense.getId() != null && !expense.getId().equals(0L);
+        double oldAmount = 0;
+        if (editCall) {
+            Expense oldExpense = expenseRepository.findById(expense.getId()).orElse(null);
+            oldAmount = oldExpense.getAmount();
+        }
         Expense returned = null;
         Optional<Consumer> consumer = consumerRepository.findById(userId);
         if (consumer.isPresent()) {
@@ -59,7 +64,7 @@ public class ExpenseService {
             newExpense.setDescription(expense.getDescription());
             newExpense.setConsumer(consumer.get());
             returned = expenseRepository.save(newExpense);
-            reportService.update(newExpense);
+            reportService.update(newExpense, editCall, oldAmount);
         }
         return returned;
     }
@@ -71,7 +76,7 @@ public class ExpenseService {
             expenseRepository.deleteByIdAndConsumer(id, consumer.get());
             return "Success";
         }
-       throw new Exception("Consumer with the userId not found!");
+        throw new Exception("Consumer with the userId not found!");
     }
 
 }

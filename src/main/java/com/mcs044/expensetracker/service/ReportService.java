@@ -43,12 +43,18 @@ public class ReportService {
         reportRepository.save(report);
     }
 
-    public void update(Expense newExpense) {
+    public void update(Expense newExpense, boolean editCall, double oldAmount) {
         String month = newExpense.getDate().getMonth().name();
         Report report = reportRepository.findByConsumerIdAndMonth(newExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
-        report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
-        report.setSaving(report.getSaving() - newExpense.getAmount());
-        reportRepository.save(report);
+        if (editCall){
+            report.setExpenditure(report.getExpenditure() - oldAmount + newExpense.getAmount());
+            report.setSaving(report.getSaving() + oldAmount - newExpense.getAmount());
+            reportRepository.save(report);
+        } else {
+            report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
+            report.setSaving(report.getSaving() - newExpense.getAmount());
+            reportRepository.save(report);
+        }
     }
 
     private String convertToFirstLetterUppercase(String string){
