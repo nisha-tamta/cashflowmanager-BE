@@ -50,4 +50,12 @@ public class BudgetService {
         budget.setMonth(MonthEnum.valueOf(month));
         budgetRepository.save(budget);
     }
+
+    public Budget getBudgetCurrentMonth(Long userId) {
+        Optional<Consumer> consumer = consumerRepository.findById(userId);
+        String month = LocalDate.now().getMonth().name().substring(0, 1).toUpperCase() 
+            + LocalDate.now().getMonth().name().substring(1).toLowerCase();
+        MonthEnum monthEnum = MonthEnum.valueOf(month);
+        return budgetRepository.findByMonthAndConsumer(monthEnum, consumer.get());
+    }
 }

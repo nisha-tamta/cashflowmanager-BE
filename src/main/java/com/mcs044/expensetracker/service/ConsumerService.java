@@ -48,14 +48,14 @@ public class ConsumerService {
 
 		if (getUserByUsername(username) != null)
 			throw new Exception(
-					"Error: Username already exists. Please try with a different username");
+					"Username already exists. Please try with a different username");
 		
 		if (getUserByEmailAddress(emailAddress) != null)
 			throw new Exception(
-					"Error: Email is already registered. Please try with a different email");
+					"Email is already registered. Please try with a different email");
 
 		if (!emailUtility.isValidEmail(emailAddress))
-			throw new Exception("Error: Invalid Email ID. Please try with a different email");
+			throw new Exception("Invalid Email ID. Please try with a different email");
 
 		Consumer createdUser = new Consumer();
 		createdUser.setUsername(username);
@@ -93,13 +93,13 @@ public class ConsumerService {
 	public Consumer userLogin(String username, String password) throws Exception {
 		Consumer consumer = consumerRepository.findByUsername(username);
 		if (consumer == null)
-			throw new Exception("Error! Please check if username or password is valid");
+			throw new Exception("Please check if username or password is valid");
 		String securedPasswordHash = consumer.getPassword();
 		byte[] salt = consumer.getSalt();
 
 		Boolean isPasswordCorrect = passwordUtility.validatePassword(password, securedPasswordHash, salt);
 		if (!isPasswordCorrect)
-			throw new Exception("Error! Please check if username or password is valid");
+			throw new Exception("Please check if username or password is valid");
 		else
 			return consumerRepository.findByUsername(username);
 	}
@@ -111,12 +111,12 @@ public class ConsumerService {
 		Boolean isPasswordCorrect = passwordUtility.validatePassword(oldPassword, securedPasswordHash,
 				consumer.getSalt());
 		if (!isPasswordCorrect)
-			throw new Exception("Error! Please check if username or password is valid");
+			throw new Exception("Please check if username or password is valid");
 
 		byte[] salt = passwordUtility.getSalt();
 		Consumer apiUser = consumerRepository.findByUsername(username);
 		if (apiUser == null)
-			throw new Exception("Error! Please check if username or password is valid");
+			throw new Exception("Please check if username or password is valid");
 		apiUser.setPassword(passwordUtility.generatePasswordHash(newPassword, salt));
 		apiUser.setSalt(salt);
 		consumerRepository.save(apiUser);

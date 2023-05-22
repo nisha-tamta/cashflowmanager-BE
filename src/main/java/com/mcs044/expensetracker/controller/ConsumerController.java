@@ -29,9 +29,8 @@ public class ConsumerController {
         try {
             return ResponseEntity.ok(userService.createUser(user));
         } catch (Exception ex) {
-            String errorMessage = "Error during user creation: " + ex.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(errorMessage);
+                                .body(ex.getMessage());
         }
     }
 
@@ -42,9 +41,8 @@ public class ConsumerController {
             Consumer returned = userService.userLogin(username, password);
             return ResponseEntity.ok(returned);
         } catch (Exception ex) {
-            String errorMessage = "Error during login: " + ex.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(errorMessage);
+                                .body(ex.getMessage());
         }
 	}
 
