@@ -35,8 +35,15 @@ public class ConsumerService {
 		Long phoneNumber = consumer.getPhoneNumber();
 		double defaultBudget = consumer.getDefaultBudget();
 
+		if (!emailUtility.isValidEmail(emailAddress))
+		throw new Exception("Invalid Email ID. Please try with a different email");
+
 		if (consumer.getId() != null && !consumer.getId().equals(0L)) { // editUserCall
 			Consumer editedUser = getUserById(consumer.getId());
+			if (!editedUser.getEmailAddress().equals(consumer.getEmailAddress()) && getUserByEmailAddress(emailAddress) != null)
+				throw new Exception("Email is already registered. Please try with a different email");
+			if (!editedUser.getUsername().equals(consumer.getUsername()) && getUserByUsername(username) != null)
+				throw new Exception("Username already exists. Please try with a different username");
 			editedUser.setUsername(username);
 			editedUser.setFirstName(firstName);
 			editedUser.setLastName(lastName);
@@ -53,9 +60,6 @@ public class ConsumerService {
 		if (getUserByEmailAddress(emailAddress) != null)
 			throw new Exception(
 					"Email is already registered. Please try with a different email");
-
-		if (!emailUtility.isValidEmail(emailAddress))
-			throw new Exception("Invalid Email ID. Please try with a different email");
 
 		Consumer createdUser = new Consumer();
 		createdUser.setUsername(username);
@@ -104,14 +108,14 @@ public class ConsumerService {
 			return consumerRepository.findByUsername(username);
 	}
 
-	public String passwordReset(String username, String oldPassword, String newPassword) throws Exception {
+	public boolean passwordReset(String username, String oldPassword, String newPassword) throws Exception {
 		Consumer consumer = consumerRepository.findByUsername(username);
 		String securedPasswordHash = consumer.getPassword();
 
 		Boolean isPasswordCorrect = passwordUtility.validatePassword(oldPassword, securedPasswordHash,
 				consumer.getSalt());
 		if (!isPasswordCorrect)
-			throw new Exception("Please check if username or password is valid");
+			throw new Exception("Incorrect password");
 
 		byte[] salt = passwordUtility.getSalt();
 		Consumer apiUser = consumerRepository.findByUsername(username);
@@ -120,7 +124,7 @@ public class ConsumerService {
 		apiUser.setPassword(passwordUtility.generatePasswordHash(newPassword, salt));
 		apiUser.setSalt(salt);
 		consumerRepository.save(apiUser);
-		return "Password reset successful";
+		return true;
 	}
 
 	public Consumer getUserById(Long userId) {

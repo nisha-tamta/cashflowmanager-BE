@@ -43,6 +43,18 @@ public class ReportService {
         reportRepository.save(report);
     }
 
+    public Report saveInitialReportForMonth(Consumer consumer, String month) {
+        Report report = new Report();
+        report.setConsumer(consumer);
+        report.setBudget(consumer.getDefaultBudget());
+        
+        report.setExpenditure(0L);
+        report.setSaving(report.getBudget());
+
+        report.setMonth(MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
+        return reportRepository.save(report);
+    }
+
     public void update(Expense newExpense, boolean editCall, double oldAmount) {
         String month = newExpense.getDate().getMonth().name();
         Report report = reportRepository.findByConsumerIdAndMonth(newExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
@@ -51,6 +63,7 @@ public class ReportService {
             report.setSaving(report.getSaving() + oldAmount - newExpense.getAmount());
             reportRepository.save(report);
         } else {
+            report = saveInitialReportForMonth(newExpense.getConsumer(), month);
             report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
             report.setSaving(report.getSaving() - newExpense.getAmount());
             reportRepository.save(report);

@@ -34,6 +34,7 @@ public class Consumer {
 	private String firstName;
 	private String lastName;
 	private Long phoneNumber;
+	@Column(unique=true)
 	private String emailAddress;
 	private byte[] salt;
 	private double defaultBudget = 50000L;

@@ -51,12 +51,11 @@ public class ConsumerController {
     public ResponseEntity<?> resetPassword(@RequestParam("username") String username, @RequestParam("oldPassword") String oldPassword, 
                 @RequestParam("newPassword") String newPassword) {
         try {
-            String resetStatus = userService.passwordReset(username, oldPassword, newPassword);
+            boolean resetStatus = userService.passwordReset(username, oldPassword, newPassword);
             return ResponseEntity.ok(resetStatus);
         } catch (Exception ex) {
-            String errorMessage = "Error during password reset: " + ex.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(errorMessage);
+                                .body(ex.getMessage());
         }
     }
 
