@@ -84,10 +84,22 @@ public class ReportService {
     }
 
     public void updateBudget(Budget budget) {
-        Report report = reportRepository.findByConsumerIdAndMonth(budget.getConsumer().getId(), budget.getMonth());
-        report.setBudget(budget.getAmount());
-        report.setSaving(budget.getAmount() - report.getExpenditure());
-        reportRepository.save(report);
+        Consumer consumer = budget.getConsumer();
+        Optional<Report> reportOpt = reportRepository.findByConsumerAndMonth(consumer, budget.getMonth());
+        if(reportOpt.isPresent()){
+            Report report = reportOpt.get();
+            report.setBudget(budget.getAmount());
+            report.setSaving(budget.getAmount() - report.getExpenditure());
+            reportRepository.save(report);
+        } else {
+            Report report = new Report();
+            report.setConsumer(consumer);
+            report.setBudget(budget.getAmount());
+            report.setExpenditure(0);
+            report.setMonth(budget.getMonth());
+            report.setSaving(budget.getAmount());
+            reportRepository.save(report);
+        }
     }
 
 }
