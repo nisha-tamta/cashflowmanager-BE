@@ -70,6 +70,14 @@ public class ReportService {
         }
     }
 
+    public void delete(Expense deletedExpense) {
+        String month = deletedExpense.getDate().getMonth().name();
+        Report report = reportRepository.findByConsumerIdAndMonth(deletedExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
+        report.setExpenditure(report.getExpenditure() - deletedExpense.getAmount());
+        report.setSaving(report.getSaving() + deletedExpense.getAmount());
+        reportRepository.save(report);
+    }
+
     private String convertToFirstLetterUppercase(String string){
         return string.substring(0, 1).toUpperCase() 
         + string.substring(1).toLowerCase();

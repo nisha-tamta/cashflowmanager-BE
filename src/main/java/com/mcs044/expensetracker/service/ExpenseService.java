@@ -70,13 +70,14 @@ public class ExpenseService {
     }
 
     @Transactional
-    public String deleteExpense(Long userId, Long id) throws Exception {
+    public boolean deleteExpense(Long userId, Long id) throws Exception {
         Optional<Consumer> consumer = consumerRepository.findById(userId);
         if (consumer.isPresent()) {
+            Expense deletedExpense = expenseRepository.findById(id).get();
             expenseRepository.deleteByIdAndConsumer(id, consumer.get());
-            return "Success";
-        }
-        throw new Exception("Consumer with the userId not found!");
+            reportService.delete(deletedExpense);
+            return true;
+        } else throw new Exception("Consumer with the userId not found!");
     }
 
 }

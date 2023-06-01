@@ -76,9 +76,8 @@ public class ExpenseController {
         try {
             return ResponseEntity.ok(expenseService.deleteExpense(userId, id));
         } catch (Exception ex) {
-            String errorMessage = "Error during expense deletion: " + ex.getMessage();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                .body(errorMessage);
+                                .body(ex.getMessage());
         }
     }
 }
