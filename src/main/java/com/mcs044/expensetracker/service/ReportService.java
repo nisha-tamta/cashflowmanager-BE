@@ -62,8 +62,12 @@ public class ReportService {
             report.setExpenditure(report.getExpenditure() - oldAmount + newExpense.getAmount());
             report.setSaving(report.getSaving() + oldAmount - newExpense.getAmount());
             reportRepository.save(report);
-        } else {
+        } else if (report == null) {
             report = saveInitialReportForMonth(newExpense.getConsumer(), month);
+            report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
+            report.setSaving(report.getSaving() - newExpense.getAmount());
+            reportRepository.save(report);
+        } else {
             report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
             report.setSaving(report.getSaving() - newExpense.getAmount());
             reportRepository.save(report);

@@ -69,6 +69,19 @@ public class ExpenseService {
         return returned;
     }
 
+    public Expense updateExpense(Long id, Long userId, Expense expenseDetails) {
+        Optional<Expense> expenseOptional = expenseRepository.findById(id);
+        Expense expense = expenseOptional.get();
+        double oldAmount = expense.getAmount();
+        expense.setCategory(expenseDetails.getCategory());
+        expense.setAmount(expenseDetails.getAmount());
+        expense.setDate(expenseDetails.getDate());
+        expense.setDescription(expenseDetails.getDescription());
+        Expense updatedExpense = expenseRepository.save(expense);
+        reportService.update(updatedExpense, true, oldAmount);
+        return updatedExpense;
+    }    
+
     @Transactional
     public boolean deleteExpense(Long userId, Long id) throws Exception {
         Optional<Consumer> consumer = consumerRepository.findById(userId);
