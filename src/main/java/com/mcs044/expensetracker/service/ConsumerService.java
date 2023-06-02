@@ -33,7 +33,7 @@ public class ConsumerService {
 				lastName = consumer.getLastName(),
 				password = consumer.getPassword();
 		Long phoneNumber = consumer.getPhoneNumber();
-		double defaultBudget = consumer.getDefaultBudget();
+		double defaultBudget = consumer.getDefaultBudget() == 0 ? 50000: consumer.getDefaultBudget();
 
 		if (!emailUtility.isValidEmail(emailAddress))
 		throw new Exception("Invalid Email ID. Please try with a different email");

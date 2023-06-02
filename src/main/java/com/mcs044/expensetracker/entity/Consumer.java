@@ -37,7 +37,7 @@ public class Consumer {
 	@Column(unique=true)
 	private String emailAddress;
 	private byte[] salt;
-	private double defaultBudget = 50000L;
+	private double defaultBudget = 0;
 
 	@OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Budget> budgets = new ArrayList<>();
