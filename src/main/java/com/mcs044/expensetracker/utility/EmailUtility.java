@@ -34,9 +34,9 @@ public class EmailUtility {
 		mailMessage.setFrom(sender);
 		mailMessage.setTo(emailAddress);
 		mailMessage.setText("The account for " + username + " has been created.");
-		mailMessage.setSubject("MDVerse account created.");
+		mailMessage.setSubject("Expense Tracker account created.");
 		javaMailSender.send(mailMessage);
-		System.out.println("MDVerse account created. Mail Sent Successfully...");
+		System.out.println("Expense Tracker account created. Mail Sent Successfully...");
 	}
 
     public boolean isValidEmail(String email) {
