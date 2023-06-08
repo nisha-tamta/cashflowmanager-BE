@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mcs044.expensetracker.entity.Consumer;
+import com.mcs044.expensetracker.entity.Role;
 import com.mcs044.expensetracker.repository.ConsumerRepository;
+import com.mcs044.expensetracker.repository.RoleRepository;
 import com.mcs044.expensetracker.utility.EmailUtility;
 import com.mcs044.expensetracker.utility.PasswordUtility;
 
@@ -13,6 +15,9 @@ public class ConsumerService {
 
 	@Autowired
 	private ConsumerRepository consumerRepository;
+
+	@Autowired
+	private RoleRepository roleRepository;
 
 	@Autowired
 	private PasswordUtility passwordUtility;
@@ -33,7 +38,34 @@ public class ConsumerService {
 				lastName = consumer.getLastName(),
 				password = consumer.getPassword();
 		Long phoneNumber = consumer.getPhoneNumber();
-		double defaultBudget = consumer.getDefaultBudget() == 0 ? 50000: consumer.getDefaultBudget();
+		double defaultBudget = consumer.getDefaultBudget() == 0 ? 50000 : consumer.getDefaultBudget();
+		int roleId = consumer.getRoleIdInt().intValue();
+		switch(roleId) {
+			case 1: {
+				Role role = new Role();
+				role.setRoleId(1L);
+				role.setRoleName("admin");
+				roleRepository.save(role);
+				consumer.setRole(role);
+				break;
+			}
+			case 2: {
+				Role role = new Role();
+				role.setRoleId(2L);
+				role.setRoleName("manager");
+				roleRepository.save(role);
+				consumer.setRole(role);
+				break;
+			}
+			case 3: {
+				Role role = new Role();
+				role.setRoleId(3L);
+				role.setRoleName("employee");
+				roleRepository.save(role);
+				consumer.setRole(role);
+				break;
+			}
+		}
 
 		if (!emailUtility.isValidEmail(emailAddress))
 		throw new Exception("Invalid Email ID. Please try with a different email");
@@ -50,6 +82,7 @@ public class ConsumerService {
 			editedUser.setPhoneNumber(phoneNumber);
 			editedUser.setEmailAddress(emailAddress);
 			editedUser.setDefaultBudget(defaultBudget);
+			editedUser.setRole(consumer.getRole());
 			return consumerRepository.save(editedUser);
 		}
 
@@ -68,6 +101,7 @@ public class ConsumerService {
 		createdUser.setPhoneNumber(phoneNumber);
 		createdUser.setEmailAddress(emailAddress);
 		createdUser.setDefaultBudget(defaultBudget);
+		createdUser.setRole(consumer.getRole());
 
 		byte[] salt = passwordUtility.getSalt();
 		String hashPassword = passwordUtility.generatePasswordHash(password, salt);
@@ -104,8 +138,18 @@ public class ConsumerService {
 		Boolean isPasswordCorrect = passwordUtility.validatePassword(password, securedPasswordHash, salt);
 		if (!isPasswordCorrect)
 			throw new Exception("Please check if username or password is valid");
-		else
-			return consumerRepository.findByUsername(username);
+		else {
+			Consumer returned = consumerRepository.findByUsername(username);
+			// Check if the user's role is authorized for accessing the system
+            if (returned.getRole().getRoleName().equals("admin")) {
+                // Perform additional operations for admin users
+            } else if (returned.getRole().getRoleName().equals("manager")) {
+                // Perform additional operations for manager users
+            } else if (returned.getRole().getRoleName().equals("employee")) {
+                // Perform additional operations for employee users
+            }
+			return returned;
+		}
 	}
 
 	public boolean passwordReset(String username, String oldPassword, String newPassword) throws Exception {
