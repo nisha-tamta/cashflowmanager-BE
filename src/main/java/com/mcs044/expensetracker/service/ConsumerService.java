@@ -1,5 +1,7 @@
 package com.mcs044.expensetracker.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -173,6 +175,10 @@ public class ConsumerService {
 
 	public Consumer getUserById(Long userId) {
 		return consumerRepository.findById(userId).orElse(null);
+	}
+
+	public List<Consumer> getUsers() {
+		return consumerRepository.findAll();
 	}
 
 }

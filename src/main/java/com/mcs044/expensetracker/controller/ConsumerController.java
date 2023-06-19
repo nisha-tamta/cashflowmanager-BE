@@ -1,5 +1,7 @@
 package com.mcs044.expensetracker.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -68,6 +70,23 @@ public class ConsumerController {
                 return ResponseEntity.ok(user);
             } else {
                 String errorMessage = "User not found with userId: " + userId;
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            }
+        } catch (Exception ex) {
+            String errorMessage = "Error during getting user by userId: " + ex.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+        }
+    }
+
+    @CrossOrigin
+    @GetMapping("/all")
+    public ResponseEntity<?> getUsers() {
+        try {
+            List<Consumer> users = userService.getUsers();
+            if (users != null) {
+                return ResponseEntity.ok(users);
+            } else {
+                String errorMessage = "Users not found";
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
             }
         } catch (Exception ex) {
