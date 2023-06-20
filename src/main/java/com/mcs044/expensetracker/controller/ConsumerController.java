@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mcs044.expensetracker.entity.Consumer;
 import com.mcs044.expensetracker.service.ConsumerService;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/user")
 public class ConsumerController {
@@ -33,6 +35,27 @@ public class ConsumerController {
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                                 .body(ex.getMessage());
+        }
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<?> editUser(@PathVariable("id") Long id, @RequestBody Consumer user) {
+        try {
+            return ResponseEntity.ok(userService.editUser(user));
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .body(ex.getMessage());
+        }
+    }
+
+    @DeleteMapping("/delete/{userId}")
+    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok("User deleted successfully");
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error during user deletion: " + ex.getMessage());
         }
     }
 

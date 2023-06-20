@@ -48,6 +48,8 @@ public class Consumer {
 	@OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL)
 	private List<Expense> expenses;
 
+	@OneToMany(mappedBy = "consumer", cascade = CascadeType.ALL)
+	private List<Report> reports;
 	/*
 	 * Each user will be associated with a specific role, 
 	 * allowing us to implement role-based access control and permissions
