@@ -49,9 +49,9 @@ public class ConsumerController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable String userId) {
         try {
-            userService.deleteUser(userId);
+            userService.deleteUser(Long.parseLong(userId));
             return ResponseEntity.ok("User deleted successfully");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

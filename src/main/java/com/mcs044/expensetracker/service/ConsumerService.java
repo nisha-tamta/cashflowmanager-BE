@@ -41,12 +41,17 @@ public class ConsumerService {
 				password = consumer.getPassword();
 		Long phoneNumber = consumer.getPhoneNumber();
 		double defaultBudget = consumer.getDefaultBudget() == 0 ? 50000 : consumer.getDefaultBudget();
-		int roleId = consumer.getRoleIdInt().intValue();
+		int roleId = 0;
+		if (consumer.getId() != null && !consumer.getId().equals(0L)) { // editUserCall
+			roleId = consumer.getRole().getRoleId().intValue();
+		} else {
+			roleId = consumer.getRoleIdInt().intValue();
+		}
 		switch(roleId) {
 			case 1: {
 				Role role = new Role();
 				role.setRoleId(1L);
-				role.setRoleName("admin");
+				role.setRoleName("System Administrator");
 				roleRepository.save(role);
 				consumer.setRole(role);
 				break;
@@ -54,15 +59,7 @@ public class ConsumerService {
 			case 2: {
 				Role role = new Role();
 				role.setRoleId(2L);
-				role.setRoleName("manager");
-				roleRepository.save(role);
-				consumer.setRole(role);
-				break;
-			}
-			case 3: {
-				Role role = new Role();
-				role.setRoleId(3L);
-				role.setRoleName("employee");
+				role.setRoleName("User");
 				roleRepository.save(role);
 				consumer.setRole(role);
 				break;
@@ -205,12 +202,10 @@ public class ConsumerService {
 		else {
 			Consumer returned = consumerRepository.findByUsername(username);
 			// Check if the user's role is authorized for accessing the system
-            if (returned.getRole().getRoleName().equals("admin")) {
+            if (returned.getRole().getRoleName().equals("System Administrator")) {
                 // Perform additional operations for admin users
-            } else if (returned.getRole().getRoleName().equals("manager")) {
+            } else if (returned.getRole().getRoleName().equals("User")) {
                 // Perform additional operations for manager users
-            } else if (returned.getRole().getRoleName().equals("employee")) {
-                // Perform additional operations for employee users
             }
 			return returned;
 		}
