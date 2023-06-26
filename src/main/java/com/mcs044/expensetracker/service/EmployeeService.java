@@ -33,11 +33,11 @@ public class EmployeeService {
 		} else {
 			departmentId = employee.getDepartmentIdInt().intValue();
 		}
-		switch(departmentId) {
+		switch (departmentId) {
 			case 1: {
 				Department department = new Department();
 				department.setId(1L);
-				department.setName("Management");
+				department.setName("Finance Department");
 				departmentRepository.save(department);
 				employee.setDepartment(department);
 				break;
@@ -45,11 +45,78 @@ public class EmployeeService {
 			case 2: {
 				Department department = new Department();
 				department.setId(2L);
-				department.setName("Operations");
+				department.setName("Human Resources (HR) Department");
 				departmentRepository.save(department);
 				employee.setDepartment(department);
 				break;
 			}
+			case 3: {
+				Department department = new Department();
+				department.setId(3L);
+				department.setName("Marketing Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 4: {
+				Department department = new Department();
+				department.setId(4L);
+				department.setName("Operations Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 5: {
+				Department department = new Department();
+				department.setId(5L);
+				department.setName("Sales Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 6: {
+				Department department = new Department();
+				department.setId(6L);
+				department.setName("IT Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 7: {
+				Department department = new Department();
+				department.setId(7L);
+				department.setName("Administration Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 8: {
+				Department department = new Department();
+				department.setId(8L);
+				department.setName("Legal Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 9: {
+				Department department = new Department();
+				department.setId(9L);
+				department.setName("Research and Development (R&D) Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 10: {
+				Department department = new Department();
+				department.setId(10L);
+				department.setName("Customer Support Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			default:
+				// Handle default case or throw an exception
+				break;
 		}
 
 		if (!emailUtility.isValidEmail(emailAddress))
@@ -93,7 +160,7 @@ public class EmployeeService {
 			case 1: {
 				Department department = new Department();
 				department.setId(1L);
-				department.setName("Management");
+				department.setName("Finance Department");
 				departmentRepository.save(department);
 				employee.setDepartment(department);
 				break;
@@ -101,11 +168,78 @@ public class EmployeeService {
 			case 2: {
 				Department department = new Department();
 				department.setId(2L);
-				department.setName("Operations");
+				department.setName("Human Resources (HR) Department");
 				departmentRepository.save(department);
 				employee.setDepartment(department);
 				break;
 			}
+			case 3: {
+				Department department = new Department();
+				department.setId(3L);
+				department.setName("Marketing Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 4: {
+				Department department = new Department();
+				department.setId(4L);
+				department.setName("Operations Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 5: {
+				Department department = new Department();
+				department.setId(5L);
+				department.setName("Sales Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 6: {
+				Department department = new Department();
+				department.setId(6L);
+				department.setName("IT Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 7: {
+				Department department = new Department();
+				department.setId(7L);
+				department.setName("Administration Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 8: {
+				Department department = new Department();
+				department.setId(8L);
+				department.setName("Legal Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 9: {
+				Department department = new Department();
+				department.setId(9L);
+				department.setName("Research and Development (R&D) Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			case 10: {
+				Department department = new Department();
+				department.setId(10L);
+				department.setName("Customer Support Department");
+				departmentRepository.save(department);
+				employee.setDepartment(department);
+				break;
+			}
+			default:
+				// Handle default case or throw an exception
+				break;
 		}
 
 		if (employee.getId() != null && !employee.getId().equals(0L)) { // editEmployeeCall
