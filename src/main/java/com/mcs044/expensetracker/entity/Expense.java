@@ -1,15 +1,19 @@
 package com.mcs044.expensetracker.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,5 +41,13 @@ public class Expense {
     @ManyToOne
     @JoinColumn(name = "consumer_id")
     private Consumer consumer;
+
+    @Nullable
+    @OneToOne    
+    @JoinColumn(name = "employee_id", nullable = true)
+    private Employee employee;
+
+    @Nullable
+    private Long employeeIdInt;
 
 }

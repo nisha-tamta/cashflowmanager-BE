@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.mcs044.expensetracker.entity.Consumer;
+import com.mcs044.expensetracker.entity.Employee;
 import com.mcs044.expensetracker.entity.Expense;
 import com.mcs044.expensetracker.repository.ConsumerRepository;
+import com.mcs044.expensetracker.repository.EmployeeRepository;
 import com.mcs044.expensetracker.repository.ExpenseRepository;
 
 import jakarta.transaction.Transactional;
@@ -25,6 +27,9 @@ public class ExpenseService {
 
     @Autowired
     private ConsumerRepository consumerRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     private ReportService reportService;
@@ -49,10 +54,14 @@ public class ExpenseService {
     public Expense addExpense(Long userId, Expense expense) {
         boolean editCall = expense.getId() != null && !expense.getId().equals(0L);
         double oldAmount = 0;
+        Employee employee = null;
         if (editCall) {
             Expense oldExpense = expenseRepository.findById(expense.getId()).orElse(null);
             oldAmount = oldExpense.getAmount();
+            employee = expense.getEmployee();
         }
+        if (expense.getCategory().equalsIgnoreCase("Personnel Costs"))
+            employee = employeeRepository.findById(expense.getEmployeeIdInt()).get();
         Expense returned = null;
         Optional<Consumer> consumer = consumerRepository.findById(userId);
         if (consumer.isPresent()) {
@@ -63,6 +72,8 @@ public class ExpenseService {
             newExpense.setDate(expense.getDate());
             newExpense.setDescription(expense.getDescription());
             newExpense.setConsumer(consumer.get());
+            if (expense.getCategory().equalsIgnoreCase("Personnel Costs"))
+                newExpense.setEmployee(employee);
             returned = expenseRepository.save(newExpense);
             reportService.update(newExpense, editCall, oldAmount);
         }
@@ -80,7 +91,7 @@ public class ExpenseService {
         Expense updatedExpense = expenseRepository.save(expense);
         reportService.update(updatedExpense, true, oldAmount);
         return updatedExpense;
-    }    
+    }
 
     @Transactional
     public boolean deleteExpense(Long userId, Long id) throws Exception {
@@ -90,7 +101,8 @@ public class ExpenseService {
             expenseRepository.deleteByIdAndConsumer(id, consumer.get());
             reportService.delete(deletedExpense);
             return true;
-        } else throw new Exception("Consumer with the userId not found!");
+        } else
+            throw new Exception("Consumer with the userId not found!");
     }
 
 }

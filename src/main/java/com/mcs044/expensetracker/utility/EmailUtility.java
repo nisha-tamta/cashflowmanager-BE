@@ -29,12 +29,12 @@ public class EmailUtility {
 	 * @param username
 	 * @param emailAddress
 	 */
-	public void sendMail(String username, String emailAddress) {
+	public void sendMail(String username, String emailAddress, String subject, String text) {
 		SimpleMailMessage mailMessage = new SimpleMailMessage();
 		mailMessage.setFrom(sender);
 		mailMessage.setTo(emailAddress);
-		mailMessage.setText("The account for " + username + " has been created.");
-		mailMessage.setSubject("Expense Tracker Business account created.");
+		mailMessage.setText(text);
+		mailMessage.setSubject(subject);
 		javaMailSender.send(mailMessage);
 		System.out.println("Expense Tracker Business account created. Mail Sent Successfully...");
 	}

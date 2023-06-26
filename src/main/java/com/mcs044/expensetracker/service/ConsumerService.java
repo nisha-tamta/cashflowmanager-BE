@@ -51,7 +51,7 @@ public class ConsumerService {
 			case 1: {
 				Role role = new Role();
 				role.setRoleId(1L);
-				role.setRoleName("System Administrator");
+				role.setRoleName("Administrator");
 				roleRepository.save(role);
 				consumer.setRole(role);
 				break;
@@ -111,7 +111,7 @@ public class ConsumerService {
 		Consumer result = consumerRepository.save(createdUser);
 		budgetService.saveInitialBudget(result);
 		reportService.saveInitialReport(result);
-		emailUtility.sendMail(username, emailAddress);
+		emailUtility.sendMail(username, emailAddress, "Expense Tracker Business account created.", "The account for " + username + " has been created." );
 		return result;
     }
 
@@ -169,7 +169,6 @@ public class ConsumerService {
 		Consumer result = consumerRepository.save(createdUser);
 		budgetService.saveInitialBudget(result);
 		reportService.saveInitialReport(result);
-		emailUtility.sendMail(username, emailAddress);
 		return result;
     }
     
@@ -202,7 +201,7 @@ public class ConsumerService {
 		else {
 			Consumer returned = consumerRepository.findByUsername(username);
 			// Check if the user's role is authorized for accessing the system
-            if (returned.getRole().getRoleName().equals("System Administrator")) {
+            if (returned.getRole().getRoleName().equals("Administrator")) {
                 // Perform additional operations for admin users
             } else if (returned.getRole().getRoleName().equals("User")) {
                 // Perform additional operations for manager users

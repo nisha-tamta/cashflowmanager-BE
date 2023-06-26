@@ -58,14 +58,14 @@ public class ReportService {
     public void update(Expense newExpense, boolean editCall, double oldAmount) {
         String month = newExpense.getDate().getMonth().name();
         Report report = reportRepository.findByConsumerIdAndMonth(newExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
-        if (editCall){
-            report.setExpenditure(report.getExpenditure() - oldAmount + newExpense.getAmount());
-            report.setSaving(report.getSaving() + oldAmount - newExpense.getAmount());
-            reportRepository.save(report);
-        } else if (report == null) {
+        if (report == null) {
             report = saveInitialReportForMonth(newExpense.getConsumer(), month);
             report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
             report.setSaving(report.getSaving() - newExpense.getAmount());
+            reportRepository.save(report);
+        } else if (editCall){
+            report.setExpenditure(report.getExpenditure() - oldAmount + newExpense.getAmount());
+            report.setSaving(report.getSaving() + oldAmount - newExpense.getAmount());
             reportRepository.save(report);
         } else {
             report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
