@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mcs044.expensetracker.entity.Consumer;
 import com.mcs044.expensetracker.entity.Expense;
 import com.mcs044.expensetracker.service.ExpenseService;
 
@@ -57,6 +58,22 @@ public class ExpenseController {
                                 .body(errorMessage);
         }
     }    
+
+    @CrossOrigin
+    @GetMapping("/{expenseId}")
+    public ResponseEntity<?> getExpenseById(@PathVariable("expenseId") Long expenseId) {
+        try {
+            Expense expense = expenseService.getExpenseById(expenseId);
+            if (expense != null) {
+                return ResponseEntity.ok(expense);
+            } else {
+                String errorMessage = "Expense not found with expenseId: " + expenseId;
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+            }
+        } catch (Exception ex) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+        }
+    }
 
     @CrossOrigin
     @PostMapping

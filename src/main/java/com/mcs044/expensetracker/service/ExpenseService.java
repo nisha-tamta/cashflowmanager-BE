@@ -51,6 +51,10 @@ public class ExpenseService {
         return null;
     }
 
+    public Expense getExpenseById(Long expenseId) {
+        return expenseRepository.findById(expenseId).orElse(null);
+    }
+
     public Expense addExpense(Long userId, Expense expense) {
         boolean editCall = expense.getId() != null && !expense.getId().equals(0L);
         double oldAmount = 0;
