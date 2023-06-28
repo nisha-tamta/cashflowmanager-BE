@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mcs044.expensetracker.entity.Consumer;
 import com.mcs044.expensetracker.entity.Expense;
 import com.mcs044.expensetracker.service.ExpenseService;
 
