@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +33,10 @@ public class Expense {
     private double amount;
     private LocalDate date;
     private String description;
+
+    @Column(columnDefinition="text")
+    @Nullable
+    private String notes;
     private String category;
 
     @JsonIgnore

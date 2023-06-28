@@ -55,6 +55,7 @@ public class ExpenseService {
         return expenseRepository.findById(expenseId).orElse(null);
     }
 
+    @Transactional
     public Expense addExpense(Long userId, Expense expense) {
         boolean editCall = expense.getId() != null && !expense.getId().equals(0L);
         double oldAmount = 0;
@@ -75,6 +76,7 @@ public class ExpenseService {
             newExpense.setAmount(expense.getAmount());
             newExpense.setDate(expense.getDate());
             newExpense.setDescription(expense.getDescription());
+            newExpense.setNotes(expense.getNotes());
             newExpense.setConsumer(consumer.get());
             if (expense.getCategory().equalsIgnoreCase("Personnel Costs"))
                 newExpense.setEmployee(employee);
@@ -84,6 +86,7 @@ public class ExpenseService {
         return returned;
     }
 
+    @Transactional
     public Expense updateExpense(Long id, Long userId, Expense expenseDetails) {
         Optional<Expense> expenseOptional = expenseRepository.findById(id);
         Expense expense = expenseOptional.get();
@@ -92,6 +95,7 @@ public class ExpenseService {
         expense.setAmount(expenseDetails.getAmount());
         expense.setDate(expenseDetails.getDate());
         expense.setDescription(expenseDetails.getDescription());
+        expense.setNotes(expenseDetails.getNotes());
         Expense updatedExpense = expenseRepository.save(expense);
         reportService.update(updatedExpense, true, oldAmount);
         return updatedExpense;
