@@ -40,10 +40,11 @@ public class ReportService {
 
         String month = LocalDate.now().getMonth().name();
         report.setMonth(MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
+        report.setYear(LocalDate.now().getYear());
         reportRepository.save(report);
     }
 
-    public Report saveInitialReportForMonth(Consumer consumer, String month) {
+    public Report saveInitialReportForMonth(Consumer consumer, String month, Integer year) {
         Report report = new Report();
         report.setConsumer(consumer);
         report.setBudget(consumer.getDefaultBudget());
@@ -52,14 +53,16 @@ public class ReportService {
         report.setSaving(report.getBudget());
 
         report.setMonth(MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
+        report.setYear(year);
         return reportRepository.save(report);
     }
 
     public void update(Expense newExpense, boolean editCall, double oldAmount) {
         String month = newExpense.getDate().getMonth().name();
-        Report report = reportRepository.findByConsumerIdAndMonth(newExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
+        Integer year = newExpense.getDate().getYear();
+        Report report = reportRepository.findByConsumerIdAndMonthAndYear(newExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)), newExpense.getDate().getYear());
         if (report == null) {
-            report = saveInitialReportForMonth(newExpense.getConsumer(), month);
+            report = saveInitialReportForMonth(newExpense.getConsumer(), month, year);
             report.setExpenditure(report.getExpenditure() + newExpense.getAmount());
             report.setSaving(report.getSaving() - newExpense.getAmount());
             reportRepository.save(report);
@@ -76,20 +79,20 @@ public class ReportService {
 
     public void delete(Expense deletedExpense) {
         String month = deletedExpense.getDate().getMonth().name();
-        Report report = reportRepository.findByConsumerIdAndMonth(deletedExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)));
+        Report report = reportRepository.findByConsumerIdAndMonthAndYear(deletedExpense.getConsumer().getId(), MonthEnum.valueOf(convertToFirstLetterUppercase(month)), deletedExpense.getDate().getYear());
         report.setExpenditure(report.getExpenditure() - deletedExpense.getAmount());
         report.setSaving(report.getSaving() + deletedExpense.getAmount());
         reportRepository.save(report);
     }
 
-    private String convertToFirstLetterUppercase(String string){
+    private static String convertToFirstLetterUppercase(String string){
         return string.substring(0, 1).toUpperCase() 
         + string.substring(1).toLowerCase();
     }
 
     public void updateBudget(Budget budget) {
         Consumer consumer = budget.getConsumer();
-        Optional<Report> reportOpt = reportRepository.findByConsumerAndMonth(consumer, budget.getMonth());
+        Optional<Report> reportOpt = reportRepository.findByConsumerAndMonthAndYear(consumer, budget.getMonth(), budget.getYear());
         if(reportOpt.isPresent()){
             Report report = reportOpt.get();
             report.setBudget(budget.getAmount());
@@ -101,6 +104,7 @@ public class ReportService {
             report.setBudget(budget.getAmount());
             report.setExpenditure(0);
             report.setMonth(budget.getMonth());
+            report.setYear(budget.getYear());
             report.setSaving(budget.getAmount());
             reportRepository.save(report);
         }

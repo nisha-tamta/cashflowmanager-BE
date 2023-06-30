@@ -27,6 +27,9 @@ public class Report {
     @Id
     @Enumerated(EnumType.STRING)
     private MonthEnum month;
+
+    @Id
+    private Integer year;
     
     private double budget;
     private double expenditure;

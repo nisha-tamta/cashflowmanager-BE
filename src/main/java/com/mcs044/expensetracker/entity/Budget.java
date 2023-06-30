@@ -22,6 +22,9 @@ public class Budget {
     @Enumerated(EnumType.STRING)
     private MonthEnum month;
 
+    @Id
+    private Integer year;
+
     private double amount;
 
 }

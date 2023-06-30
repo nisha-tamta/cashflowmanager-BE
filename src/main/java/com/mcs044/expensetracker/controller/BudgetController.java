@@ -28,6 +28,13 @@ public class BudgetController {
     }
 
     @CrossOrigin
+    @GetMapping("/time")
+    public ResponseEntity<?> getBudgetForTime(@RequestParam("userId") Long userId, @RequestParam("month") Integer month,
+                                            @RequestParam("year") Integer year) {
+        return ResponseEntity.ok(budgetService.getBudgetForTime(userId, month, year));
+    }
+
+    @CrossOrigin
     @PutMapping
     public ResponseEntity<?> addBudget(@RequestParam("userId") Long userId, @RequestBody Budget budget) {
          try {
