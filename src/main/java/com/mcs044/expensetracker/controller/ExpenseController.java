@@ -45,7 +45,7 @@ public class ExpenseController {
 
     @CrossOrigin
     @GetMapping
-    public ResponseEntity<?> getAllExpenses(@RequestParam("userId") Long userId,
+    public ResponseEntity<?> getAllExpensesForTime(@RequestParam("userId") Long userId,
                                             @RequestParam("month") Integer month,
                                             @RequestParam("year") Integer year) {
         try {
