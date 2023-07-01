@@ -11,5 +11,6 @@ public class BudgetId implements Serializable {
 
     private Long consumer;
     private MonthEnum month;
+    private Integer year;
 
 }

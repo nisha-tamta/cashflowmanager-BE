@@ -10,6 +10,7 @@ import com.mcs044.expensetracker.entity.Budget;
 import com.mcs044.expensetracker.repository.BudgetRepository;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.Optional;
 
 @Service
@@ -35,6 +36,7 @@ public class BudgetService {
             newBudget.setAmount(budget.getAmount());
             newBudget.setConsumer(consumer.get());
             newBudget.setMonth(budget.getMonth());
+            newBudget.setYear(budget.getYear());
             returned = budgetRepository.save(newBudget);
             reportService.updateBudget(returned);
         }
@@ -48,6 +50,7 @@ public class BudgetService {
         String month = LocalDate.now().getMonth().name().substring(0, 1).toUpperCase() 
             + LocalDate.now().getMonth().name().substring(1).toLowerCase();
         budget.setMonth(MonthEnum.valueOf(month));
+        budget.setYear(LocalDate.now().getYear());
         budgetRepository.save(budget);
     }
 
@@ -56,6 +59,23 @@ public class BudgetService {
         String month = LocalDate.now().getMonth().name().substring(0, 1).toUpperCase() 
             + LocalDate.now().getMonth().name().substring(1).toLowerCase();
         MonthEnum monthEnum = MonthEnum.valueOf(month);
-        return budgetRepository.findByMonthAndConsumer(monthEnum, consumer.get());
+        return budgetRepository.findByMonthAndYearAndConsumer(monthEnum, LocalDate.now().getYear(), consumer.get());
+    }
+
+    public Budget getBudgetForTime(Long userId, Integer monthInt, Integer year) {
+        Optional<Consumer> consumer = consumerRepository.findById(userId);
+        String monthName = Month.of(monthInt).name();
+        String month = monthName.substring(0, 1).toUpperCase() 
+            + monthName.substring(1).toLowerCase();
+        MonthEnum monthEnum = MonthEnum.valueOf(month);
+        Budget budget = budgetRepository.findByMonthAndYearAndConsumer(monthEnum, year, consumer.get());
+        if (budget == null) {
+            budget = new Budget();
+            budget.setAmount(consumer.get().getDefaultBudget());
+            budget.setConsumer(consumer.get());
+            budget.setMonth(monthEnum);
+            budget.setYear(year);
+            return budget;
+        } else return budget;
     }
 }

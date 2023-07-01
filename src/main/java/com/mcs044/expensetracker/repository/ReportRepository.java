@@ -17,6 +17,6 @@ import com.mcs044.expensetracker.entity.Report;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
     public List<Report> findByConsumer(Consumer consumer);
-    public Optional<Report> findByConsumerAndMonth(Consumer consumer, MonthEnum month);
-    public Report findByConsumerIdAndMonth(Long consumerId, MonthEnum month);
+    public Optional<Report> findByConsumerAndMonthAndYear(Consumer consumer, MonthEnum month, Integer year);
+    public Report findByConsumerIdAndMonthAndYear(Long consumerId, MonthEnum month, Integer year);
 }

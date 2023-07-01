@@ -11,5 +11,6 @@ public class ReportId implements Serializable {
 
     private Long consumer;
     private MonthEnum month;
+    private Integer year;
 
 }
