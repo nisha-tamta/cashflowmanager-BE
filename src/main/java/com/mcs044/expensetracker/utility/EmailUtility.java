@@ -36,7 +36,7 @@ public class EmailUtility {
 		mailMessage.setText(text);
 		mailMessage.setSubject(subject);
 		javaMailSender.send(mailMessage);
-		System.out.println("Expense Tracker Business account created. Mail Sent Successfully...");
+		System.out.println("CashFlow Manager account created. Mail Sent Successfully...");
 	}
 
     public boolean isValidEmail(String email) {

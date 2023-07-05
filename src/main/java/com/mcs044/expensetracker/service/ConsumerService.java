@@ -111,7 +111,7 @@ public class ConsumerService {
 		Consumer result = consumerRepository.save(createdUser);
 		budgetService.saveInitialBudget(result);
 		reportService.saveInitialReport(result);
-		emailUtility.sendMail(username, emailAddress, "Expense Tracker Business account created.", "The account for " + username + " has been created." );
+		emailUtility.sendMail(username, emailAddress, "CashFlow Manager account created.", "The account for " + username + " has been created." );
 		return result;
     }
 
